@@ -113,5 +113,10 @@ tasks {
 }
 
 sourceSets.main {
-    resources.srcDir("src/generated/resources")
+    resources {
+        srcDir("src/generated/resources")
+        exclude {
+            it.file == file("src/generated/resources/.cache")
+        }
+    }
 }
