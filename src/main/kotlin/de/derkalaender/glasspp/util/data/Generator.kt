@@ -9,8 +9,11 @@ class Generator {
         val generator = event.generator
         // val helper = event.existingFileHelper
 
-        if (event.includeClient()) {
+        if(event.includeServer()) {
             generator.addProvider(LootTables(generator))
+        }
+
+        if (event.includeClient()) {
             Languages(generator)
         }
     }
