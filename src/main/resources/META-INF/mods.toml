@@ -8,7 +8,7 @@ Adds glass shards and stuff. It's that simple
 [[dependencies.glasspp]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="[31.1.18,)"
     ordering="NONE"
     side="BOTH"
 
