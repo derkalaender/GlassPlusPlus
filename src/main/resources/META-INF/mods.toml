@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+
+description='''
+Adds glass shards and stuff. It's that simple
+'''
+
+[[dependencies.glasspp]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.glasspp]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+displayName="Glass++"
+modId="glasspp"
+version="${file.jarVersion}"
+authors="der kaländer (derkalaender)"
