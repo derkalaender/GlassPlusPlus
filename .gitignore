@@ -23,7 +23,6 @@ run
 
 # Files from Forge MDK
 forge*changelog.txt
-gradle
 
 # Data generator cache
 /src/generated/resources/.cache
