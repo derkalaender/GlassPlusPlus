@@ -1,4 +1,5 @@
 import net.minecraftforge.gradle.common.util.RunConfig
+import net.minecraftforge.gradle.userdev.DependencyManagementExtension
 import net.minecraftforge.gradle.userdev.UserDevExtension
 
 buildscript {
@@ -57,18 +58,34 @@ configure<UserDevExtension> {
     createRunConfig("client") {}
     createRunConfig("server") {}
     createRunConfig("data") {
-        args("--mod", mod_id, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
+        args(
+            "--mod",
+            mod_id,
+            "--all",
+            "--output",
+            file("src/generated/resources/"),
+            "--existing",
+            file("src/main/resources/")
+        )
     }
 }
 
 repositories {
     mavenCentral()
+    maven(url = "https://dvs1.progwml6.com/files/maven/") // JEI
 }
+
+val fg = extensions.getByType(DependencyManagementExtension::class.java)
 
 dependencies {
     "minecraft"("net.minecraftforge:forge:$minecraft_version-$forge_version")
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    // JEI
+    val jei_version: String by project
+    compileOnly(fg.deobf("mezz.jei:jei-$minecraft_version:$jei_version:api"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-$minecraft_version:$jei_version"))
 }
 
 configure<JavaPluginConvention> {
