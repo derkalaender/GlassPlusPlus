@@ -31,13 +31,15 @@ class GlassShardRecipe(
 
     override fun getCraftingResult(inv: CraftingInventory): ItemStack {
         return if (recipeOutput.item.registryName in GlassTypes.getAll().map { it.getResourceLocation() }) {
-            val matchingStacks =
-                ingredients.flatMap { it.matchingStacks.toList() }.filter { it.item is GlassShard }.onEach { println(it.displayName.formattedText) }.distinct()
-            println(matchingStacks.size)
-            matchingStacks.forEach { println(it.displayName.formattedText) }
-
-            if (matchingStacks.size == 1) {
-                GlassShard.getGlassType(matchingStacks.first()).getItem().toItemStack(recipeOutput.count)
+            val allStacks = mutableListOf<ItemStack>()
+            for (x in 0 ..inv.width) {
+                for (y in 0..inv.height) {
+                    allStacks.add(inv.getStackInSlot(x + y * width))
+                }
+            }
+            val actualGlassTypes = allStacks.filter { it.item is GlassShard }.map { GlassShard.getGlassType(it) }.distinct()
+            if (actualGlassTypes.size == 1) {
+                return actualGlassTypes.first().getItem().toItemStack(recipeOutput.count)
             } else {
                 ItemStack.EMPTY
             }
