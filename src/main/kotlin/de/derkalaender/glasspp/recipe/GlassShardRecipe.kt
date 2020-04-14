@@ -17,12 +17,19 @@ class GlassShardRecipe(
         val SERIALIZER = SpecialRecipeSerializer(Function(::GlassShardRecipe))
     }
 
+    // Only match if all 4 items are the same glass shards
     override fun matches(inv: CraftingInventory, worldIn: World) =
-        inv.getAllSlotContents().filter { it.item == Registry.GLASS_SHARD.get() }.map { GlassShard.getGlassType(it) }
-            .distinct().size == 1
+        inv.getAllSlotContents()
+            .filter { !it.isEmpty }
+            .let {
+                it.size == 4
+                    && it.all { stack -> stack.item == Registry.GLASS_SHARD.get() }
+                    && it.map { stack -> GlassShard.getGlassType(stack) }.distinct().size == 1
+            }
 
     override fun getCraftingResult(inv: CraftingInventory) =
-        inv.getAllSlotContents().first { it.item == Registry.GLASS_SHARD.get() }
+        inv.getAllSlotContents()
+            .first { it.item == Registry.GLASS_SHARD.get() }
             .let { GlassShard.getGlassType(it).getItem().toItemStack(1) }
 
     private fun CraftingInventory.getAllSlotContents() = (0 until sizeInventory).map { getStackInSlot(it) }
