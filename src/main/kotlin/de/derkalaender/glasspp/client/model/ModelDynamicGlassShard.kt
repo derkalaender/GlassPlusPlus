@@ -4,7 +4,6 @@ import de.derkalaender.glasspp.glass.GlassType
 import de.derkalaender.glasspp.items.GlassShard
 import de.derkalaender.glasspp.util.rl
 import de.derkalaender.glasspp.util.with
-import java.util.Random
 import net.minecraft.block.BlockState
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
@@ -18,6 +17,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
 import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.ItemLayerModel
+import java.util.Random
 
 class ModelDynamicGlassShard(val hasOverrides: Boolean, val base: IBakedModel, internal val glassType: GlassType) :
     IBakedModel {
@@ -57,9 +57,7 @@ class ModelDynamicGlassShard(val hasOverrides: Boolean, val base: IBakedModel, i
                     worldIn: World?,
                     entityIn: LivingEntity?
                 ): IBakedModel? {
-
-                    val glassShard = stack.item as GlassShard
-                    val glassType = glassShard.getGlassType(stack)
+                    val glassType = GlassShard.getGlassType(stack)
 
                     return ModelDynamicGlassShard(false, base, glassType)
                 }
