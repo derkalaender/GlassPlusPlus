@@ -1,0 +1,15 @@
+{
+  "type": "glasspp:glass_shard",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "glasspp:glass_shard"
+    }
+  },
+  "result": {
+    "item": "minecraft:glass"
+  }
+}

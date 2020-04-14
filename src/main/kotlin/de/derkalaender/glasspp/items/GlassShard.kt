@@ -30,9 +30,9 @@ class GlassShard : Item(
     companion object {
         fun fromGlassType(glassType: GlassType) =
             Registry.GLASS_SHARD.get().toItemStack().applyNBT(::GlassShardNBT) { this.glassType.set(glassType) }
-    }
 
-    fun getGlassType(stack: ItemStack) = stack.letNBT(::GlassShardNBT) { glassType.get() }
+        fun getGlassType(stack: ItemStack) = stack.letNBT(::GlassShardNBT) { glassType.get() }
+    }
 
     private fun isBroken(stack: ItemStack) = !GlassTypes.getAll().contains(getGlassType(stack))
 
