@@ -1,6 +1,6 @@
 package de.derkalaender.glasspp.util.data
 
-import de.derkalaender.glasspp.recipe.GlassShardRecipe
+import de.derkalaender.glasspp.recipe.GlassFromShardsRecipe
 import de.derkalaender.glasspp.util.rl
 import net.minecraft.data.CustomRecipeBuilder
 import net.minecraft.data.DataGenerator
@@ -11,7 +11,7 @@ import java.util.function.Consumer
 
 class Recipes(gen: DataGenerator) : RecipeProvider(gen) {
     override fun registerRecipes(consumer: Consumer<IFinishedRecipe>) {
-        specialRecipe(consumer, GlassShardRecipe.SERIALIZER)
+        specialRecipe(consumer, GlassFromShardsRecipe.SERIALIZER)
     }
 
     private fun specialRecipe(consumer: Consumer<IFinishedRecipe>, serializer: SpecialRecipeSerializer<*>) {

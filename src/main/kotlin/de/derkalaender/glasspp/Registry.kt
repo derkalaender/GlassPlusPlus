@@ -1,7 +1,7 @@
 package de.derkalaender.glasspp
 
 import de.derkalaender.glasspp.items.GlassShard
-import de.derkalaender.glasspp.recipe.GlassShardRecipe
+import de.derkalaender.glasspp.recipe.GlassFromShardsRecipe
 import de.derkalaender.glasspp.util.MOD_BUS
 import de.derkalaender.glasspp.util.rl
 import net.minecraft.item.crafting.IRecipeSerializer
@@ -23,6 +23,6 @@ object Registry {
 
     @SubscribeEvent
     fun registerRecipeSerializers(event: RegistryEvent.Register<IRecipeSerializer<*>>) {
-        event.registry.register(GlassShardRecipe.SERIALIZER.setRegistryName(rl("glass_from_shards")))
+        event.registry.register(GlassFromShardsRecipe.SERIALIZER.setRegistryName(rl("glass_from_shards")))
     }
 }

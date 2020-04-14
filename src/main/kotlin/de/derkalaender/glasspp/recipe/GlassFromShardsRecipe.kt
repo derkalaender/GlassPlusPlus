@@ -10,11 +10,11 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
 import java.util.function.Function
 
-class GlassShardRecipe(
+class GlassFromShardsRecipe(
     id: ResourceLocation
 ) : SpecialRecipe(id) {
     companion object {
-        val SERIALIZER = SpecialRecipeSerializer(Function(::GlassShardRecipe))
+        val SERIALIZER = SpecialRecipeSerializer(Function(::GlassFromShardsRecipe))
     }
 
     // Only match if all 4 items are the same glass shards
