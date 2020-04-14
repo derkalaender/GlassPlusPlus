@@ -11,6 +11,7 @@ class Generator {
 
         if(event.includeServer()) {
             generator.addProvider(LootTables(generator))
+            generator.addProvider(Recipes(generator))
         }
 
         if (event.includeClient()) {
