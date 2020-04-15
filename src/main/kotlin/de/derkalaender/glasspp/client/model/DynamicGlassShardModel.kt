@@ -32,6 +32,7 @@ import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.BakedItemModel
 import net.minecraftforge.client.model.IModelConfiguration
 import net.minecraftforge.client.model.IModelLoader
+import net.minecraftforge.client.model.ItemLayerModel
 import net.minecraftforge.client.model.ItemTextureQuadConverter
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelTransformComposition
@@ -62,12 +63,14 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         // Shard materials
         val particleLocation = owner.resolveTexture("particle")
         val testLocation = owner.resolveTexture("test")
+        val frameLocation = owner.resolveTexture("frame")
 
         // Underlying glass material
         val glassLocation = ForgeHooksClient.getBlockMaterial(glassType.getResourceLocation())
 
         // Sprites
         val testSprite = spriteGetter.apply(testLocation)
+        val frameSprite = spriteGetter.apply(frameLocation)
         val glassSprite = spriteGetter.apply(glassLocation)
 
         // If no particle is defined (probable), then just use the underlying glass as the sprite
@@ -82,6 +85,9 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         println("Underlying glass material: $glassLocation")
 
         val quads = mutableListOf<BakedQuad>()
+
+        // Add frame quads
+        quads.addAll(ItemLayerModel.getQuadsForSprite(0, frameSprite, transform))
 
         // Add quads from underlying glass shaped as shard
         quads.addAll(
@@ -130,7 +136,8 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
     ): MutableCollection<Material> {
         return mutableSetOf(
             owner.resolveTexture("particle"),
-            owner.resolveTexture("test")
+            owner.resolveTexture("test"),
+            owner.resolveTexture("frame")
         )
     }
 
