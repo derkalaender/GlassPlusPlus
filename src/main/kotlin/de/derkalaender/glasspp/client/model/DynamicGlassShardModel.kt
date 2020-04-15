@@ -47,6 +47,14 @@ import java.util.function.Function
  */
 class DynamicGlassShardModel(private val glassType: GlassType, private val dummy: Boolean = false) :
     IModelGeometry<DynamicGlassShardModel> {
+    companion object {
+        // "Magic values"; Again, see DynamicBucketModel
+        private const val NORTH_Z_MASK = 7.498f / 16f
+        private const val SOUTH_Z_MASK = 8.502f / 16f
+        private const val NORTH_Z_COVER = 7.496f / 16f
+        private const val SOUTH_Z_COVER = 8.504f / 16f
+    }
+
     fun withGlassType(glassType: GlassType) = DynamicGlassShardModel(glassType)
 
     override fun bake(
@@ -83,10 +91,12 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
         // Shard materials
         val particleLocation = owner.resolveTexture("particle")
         val maskLocation = owner.resolveTexture("mask")
+        val coverLocation = owner.resolveTexture("cover")
         val frameLocation = owner.resolveTexture("frame")
 
         // Sprites
         val maskSprite = spriteGetter.apply(maskLocation)
+        val coverSprite = spriteGetter.apply(coverLocation)
         val frameSprite = spriteGetter.apply(frameLocation)
 
         val glassSprite = Minecraft.getInstance().itemRenderer.itemModelMesher.getParticleIcon(glassType.getItem())
@@ -95,18 +105,18 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
         val particleSprite =
             if (particleLocation.hasMissingTextureSprite()) glassSprite else spriteGetter.apply(particleLocation)
 
-        val quads = mutableListOf<BakedQuad>()
+        val quads = ImmutableList.builder<BakedQuad>()
 
         // Add frame quads
         quads.addAll(ItemLayerModel.getQuadsForSprite(0, frameSprite, transform))
 
-        // Add quads from underlying glass shaped as shard
+        // Add inside (glass)
         quads.addAll(
             ItemTextureQuadConverter.convertTexture(
                 transform,
                 maskSprite,
                 glassSprite,
-                7.498f / 16f,
+                NORTH_Z_MASK,
                 Direction.NORTH,
                 -0x1,
                 1
@@ -117,7 +127,31 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
                 transform,
                 maskSprite,
                 glassSprite,
-                8.502f / 16f,
+                SOUTH_Z_MASK,
+                Direction.SOUTH,
+                -0x1,
+                1
+            )
+        )
+
+        // Subtract outside (?)
+        quads.addAll(
+            ItemTextureQuadConverter.convertTexture(
+                transform,
+                coverSprite,
+                frameSprite,
+                NORTH_Z_COVER,
+                Direction.NORTH,
+                -0x1,
+                1
+            )
+        )
+        quads.addAll(
+            ItemTextureQuadConverter.convertTexture(
+                transform,
+                coverSprite,
+                frameSprite,
+                SOUTH_Z_COVER,
                 Direction.SOUTH,
                 -0x1,
                 1
@@ -126,7 +160,7 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
 
         return BakedModel(
             bakery,
-            ImmutableList.copyOf(quads), // Actual quads that make up the model
+            quads.build(), // Actual quads that make up the model
             spriteGetter.apply(particleLocation), // Particle sprites
             Maps.immutableEnumMap(transformMap),
             transform.isIdentity,
@@ -148,6 +182,7 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
         return mutableSetOf(
             owner.resolveTexture("particle"),
             owner.resolveTexture("mask"),
+            owner.resolveTexture("cover"),
             owner.resolveTexture("frame")
         )
     }
