@@ -11,9 +11,9 @@ import de.derkalaender.glasspp.glass.GlassType
 import de.derkalaender.glasspp.glass.GlassTypes
 import de.derkalaender.glasspp.items.GlassShard
 import de.derkalaender.glasspp.util.from
+import de.derkalaender.glasspp.util.toItemStack
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
-import net.minecraft.client.renderer.model.BlockModel
 import net.minecraft.client.renderer.model.IBakedModel
 import net.minecraft.client.renderer.model.IModelTransform
 import net.minecraft.client.renderer.model.IUnbakedModel
@@ -38,6 +38,7 @@ import net.minecraftforge.client.model.ItemTextureQuadConverter
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelTransformComposition
 import net.minecraftforge.client.model.PerspectiveMapWrapper
+import net.minecraftforge.client.model.data.EmptyModelData
 import net.minecraftforge.client.model.geometry.IModelGeometry
 import java.util.function.Function
 
@@ -55,6 +56,8 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         overrides: ItemOverrideList,
         modelLocation: ResourceLocation
     ): IBakedModel {
+        val missingTextureSprite by lazy { spriteGetter.apply(ForgeHooksClient.getBlockMaterial(MissingTextureSprite.getLocation())) }
+
         // Transforms
         val transformsFromModel = owner.combinedTransform
         val transformMap =
@@ -66,32 +69,35 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         val maskLocation = owner.resolveTexture("mask")
         val frameLocation = owner.resolveTexture("frame")
 
-        // Try to get the particle material from the glass type
-        // This is currently very hacky and bound to break
-        val glassBlockRl = glassType.getResourceLocation().let { ResourceLocation(it.namespace, "block/" + it.path) }
-        val glassModel = bakery.getUnbakedModel(glassBlockRl)
-
-        val glassLocation = if (glassModel is BlockModel) {
-            glassModel.resolveTextureName("particle")
-        } else {
-            ForgeHooksClient.getBlockMaterial(glassType.getResourceLocation())
-        }
-
         // Sprites
         val maskSprite = spriteGetter.apply(maskLocation)
         val frameSprite = spriteGetter.apply(frameLocation)
-        val glassSprite = spriteGetter.apply(glassLocation)
+
+        // Try to get the particle sprite from the glass type
+        // This is currently very hacky (I think) and bound to break
+        val glassModel = bakery.getBakedModel(
+            glassType.getResourceLocation().let { "block/${it.path}" from it.namespace },
+            transformsFromModel,
+            spriteGetter
+        )
+        val glassSprite = glassModel
+            ?.overrides
+            ?.getModelWithOverrides(
+                glassModel, glassType.getItem().toItemStack(), null, null
+            )?.getParticleTexture(
+                EmptyModelData.INSTANCE
+            ) ?: missingTextureSprite
 
         // If no particle is defined (probable), then just use the underlying glass as the sprite
         val particleSprite =
-            spriteGetter.apply(if (particleLocation.hasMissingTextureSprite()) glassLocation else particleLocation)
+            if (particleLocation.hasMissingTextureSprite()) glassSprite else spriteGetter.apply(particleLocation)
 
         // Debug
         println("Particle missing: " + particleLocation.hasMissingTextureSprite())
         println("Mask missing: " + maskLocation.hasMissingTextureSprite())
-        println("Underlying glass missing: " + glassLocation.hasMissingTextureSprite())
-
-        println("Underlying glass material: $glassLocation")
+        // println("Underlying glass missing: " + glassLocation.hasMissingTextureSprite())
+        //
+        // println("Underlying glass material: $glassLocation")
 
         val quads = mutableListOf<BakedQuad>()
 
