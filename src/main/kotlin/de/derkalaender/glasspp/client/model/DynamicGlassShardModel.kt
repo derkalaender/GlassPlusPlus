@@ -62,14 +62,14 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
 
         // Shard materials
         val particleLocation = owner.resolveTexture("particle")
-        val testLocation = owner.resolveTexture("test")
+        val maskLocation = owner.resolveTexture("mask")
         val frameLocation = owner.resolveTexture("frame")
 
         // Underlying glass material
         val glassLocation = ForgeHooksClient.getBlockMaterial(glassType.getResourceLocation())
 
         // Sprites
-        val testSprite = spriteGetter.apply(testLocation)
+        val maskSprite = spriteGetter.apply(maskLocation)
         val frameSprite = spriteGetter.apply(frameLocation)
         val glassSprite = spriteGetter.apply(glassLocation)
 
@@ -79,7 +79,7 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
 
         // Debug
         println("Particle missing: " + particleLocation.hasMissingTextureSprite())
-        println("Test missing: " + testLocation.hasMissingTextureSprite())
+        println("Mask missing: " + maskLocation.hasMissingTextureSprite())
         println("Underlying glass missing: " + glassLocation.hasMissingTextureSprite())
 
         println("Underlying glass material: $glassLocation")
@@ -93,7 +93,7 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         quads.addAll(
             ItemTextureQuadConverter.convertTexture(
                 transform,
-                testSprite,
+                maskSprite,
                 glassSprite,
                 7.498f / 16f,
                 Direction.NORTH,
@@ -104,7 +104,7 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         quads.addAll(
             ItemTextureQuadConverter.convertTexture(
                 transform,
-                testSprite,
+                maskSprite,
                 glassSprite,
                 8.502f / 16f,
                 Direction.SOUTH,
@@ -136,7 +136,7 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
     ): MutableCollection<Material> {
         return mutableSetOf(
             owner.resolveTexture("particle"),
-            owner.resolveTexture("test"),
+            owner.resolveTexture("mask"),
             owner.resolveTexture("frame")
         )
     }

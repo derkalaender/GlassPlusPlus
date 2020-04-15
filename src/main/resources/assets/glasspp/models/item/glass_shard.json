@@ -2,8 +2,7 @@
   "parent": "forge:item/default",
   "loader": "glasspp:glass_shard",
   "textures": {
-    "particle": "glasspp:item/glass_shard",
-    "test": "glasspp:item/glass_shard",
-    "frame": "glasspp:item/glass_shard_frame"
+    "mask": "glasspp:item/glass_shard/mask",
+    "frame": "glasspp:item/glass_shard/frame"
   }
 }
