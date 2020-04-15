@@ -13,6 +13,7 @@ import de.derkalaender.glasspp.items.GlassShard
 import de.derkalaender.glasspp.util.from
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
+import net.minecraft.client.renderer.model.BlockModel
 import net.minecraft.client.renderer.model.IBakedModel
 import net.minecraft.client.renderer.model.IModelTransform
 import net.minecraft.client.renderer.model.IUnbakedModel
@@ -65,8 +66,16 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         val maskLocation = owner.resolveTexture("mask")
         val frameLocation = owner.resolveTexture("frame")
 
-        // Underlying glass material
-        val glassLocation = ForgeHooksClient.getBlockMaterial(glassType.getResourceLocation())
+        // Try to get the particle material from the glass type
+        // This is currently very hacky and bound to break
+        val glassBlockRl = glassType.getResourceLocation().let { ResourceLocation(it.namespace, "block/" + it.path) }
+        val glassModel = bakery.getUnbakedModel(glassBlockRl)
+
+        val glassLocation = if (glassModel is BlockModel) {
+            glassModel.resolveTextureName("particle")
+        } else {
+            ForgeHooksClient.getBlockMaterial(glassType.getResourceLocation())
+        }
 
         // Sprites
         val maskSprite = spriteGetter.apply(maskLocation)
