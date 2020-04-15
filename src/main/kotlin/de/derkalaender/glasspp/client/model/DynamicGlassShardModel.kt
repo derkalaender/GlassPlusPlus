@@ -39,12 +39,14 @@ import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelTransformComposition
 import net.minecraftforge.client.model.PerspectiveMapWrapper
 import net.minecraftforge.client.model.geometry.IModelGeometry
+import net.minecraftforge.resource.VanillaResourceType
 import java.util.function.Function
 
 /**
  * Adapted from [Forge's DynamicBucketModel][net.minecraftforge.client.model.DynamicBucketModel]
  */
-class DynamicGlassShardModel(private val glassType: GlassType, private val dummy: Boolean = false) : IModelGeometry<DynamicGlassShardModel> {
+class DynamicGlassShardModel(private val glassType: GlassType, private val dummy: Boolean = false) :
+    IModelGeometry<DynamicGlassShardModel> {
     fun withGlassType(glassType: GlassType) = DynamicGlassShardModel(glassType)
 
     override fun bake(
@@ -63,7 +65,9 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
             PerspectiveMapWrapper.getTransforms(ModelTransformComposition(transformsFromModel, modelTransform))
         val transform = modelTransform.rotation
 
-        if(dummy) return BakedModel(
+        // Return early for the first time as we're only interested in the real time item overrides
+        // This way ItemModelMesher#getParticleIcon doesn't throw a null pointer exception
+        if (dummy) return BakedModel(
             bakery,
             ImmutableList.of(),
             missingTextureSprite,
@@ -84,19 +88,12 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
         // Sprites
         val maskSprite = spriteGetter.apply(maskLocation)
         val frameSprite = spriteGetter.apply(frameLocation)
-        
+
         val glassSprite = Minecraft.getInstance().itemRenderer.itemModelMesher.getParticleIcon(glassType.getItem())
 
         // If no particle is defined (probable), then just use the underlying glass as the sprite
         val particleSprite =
             if (particleLocation.hasMissingTextureSprite()) glassSprite else spriteGetter.apply(particleLocation)
-
-        // Debug
-        println("Particle missing: " + particleLocation.hasMissingTextureSprite())
-        println("Mask missing: " + maskLocation.hasMissingTextureSprite())
-        // println("Underlying glass missing: " + glassLocation.hasMissingTextureSprite())
-        //
-        // println("Underlying glass material: $glassLocation")
 
         val quads = mutableListOf<BakedQuad>()
 
@@ -176,7 +173,6 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
             worldIn: World?,
             entityIn: LivingEntity?
         ): IBakedModel? {
-//            return null
             val model = originalModel as BakedModel
             val glassType = GlassShard.getGlassType(stack)
 
@@ -201,7 +197,7 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
 
     object Loader : IModelLoader<DynamicGlassShardModel> {
 
-        // override fun getResourceType() = VanillaResourceType.MODELS
+        override fun getResourceType() = VanillaResourceType.MODELS
 
         override fun onResourceManagerReload(resourceManager: IResourceManager) {}
 
