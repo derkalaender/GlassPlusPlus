@@ -32,6 +32,11 @@ class GlassShard : Item(
             Registry.GLASS_SHARD.get().toItemStack().applyNBT(::GlassShardNBT) { this.glassType.set(glassType) }
 
         fun getGlassType(stack: ItemStack) = stack.letNBT(::GlassShardNBT) { glassType.get() }
+
+        // JEI
+        fun getSubtype(stack: ItemStack): String {
+            return getGlassType(stack).getResourceLocation().toString()
+        }
     }
 
     private fun isBroken(stack: ItemStack) = !GlassTypes.getAll().contains(getGlassType(stack))
