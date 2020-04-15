@@ -11,7 +11,7 @@ import de.derkalaender.glasspp.glass.GlassType
 import de.derkalaender.glasspp.glass.GlassTypes
 import de.derkalaender.glasspp.items.GlassShard
 import de.derkalaender.glasspp.util.from
-import de.derkalaender.glasspp.util.toItemStack
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
 import net.minecraft.client.renderer.model.IBakedModel
@@ -38,14 +38,13 @@ import net.minecraftforge.client.model.ItemTextureQuadConverter
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelTransformComposition
 import net.minecraftforge.client.model.PerspectiveMapWrapper
-import net.minecraftforge.client.model.data.EmptyModelData
 import net.minecraftforge.client.model.geometry.IModelGeometry
 import java.util.function.Function
 
 /**
  * Adapted from [Forge's DynamicBucketModel][net.minecraftforge.client.model.DynamicBucketModel]
  */
-class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<DynamicGlassShardModel> {
+class DynamicGlassShardModel(private val glassType: GlassType, private val dummy: Boolean = false) : IModelGeometry<DynamicGlassShardModel> {
     fun withGlassType(glassType: GlassType) = DynamicGlassShardModel(glassType)
 
     override fun bake(
@@ -64,6 +63,19 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
             PerspectiveMapWrapper.getTransforms(ModelTransformComposition(transformsFromModel, modelTransform))
         val transform = modelTransform.rotation
 
+        if(dummy) return BakedModel(
+            bakery,
+            ImmutableList.of(),
+            missingTextureSprite,
+            Maps.immutableEnumMap(transformMap),
+            transform.isIdentity,
+            owner.isSideLit,
+            this,
+            owner,
+            modelTransform,
+            mutableMapOf()
+        )
+
         // Shard materials
         val particleLocation = owner.resolveTexture("particle")
         val maskLocation = owner.resolveTexture("mask")
@@ -72,21 +84,8 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
         // Sprites
         val maskSprite = spriteGetter.apply(maskLocation)
         val frameSprite = spriteGetter.apply(frameLocation)
-
-        // Try to get the particle sprite from the glass type
-        // This is currently very hacky (I think) and bound to break
-        val glassModel = bakery.getBakedModel(
-            glassType.getResourceLocation().let { "block/${it.path}" from it.namespace },
-            transformsFromModel,
-            spriteGetter
-        )
-        val glassSprite = glassModel
-            ?.overrides
-            ?.getModelWithOverrides(
-                glassModel, glassType.getItem().toItemStack(), null, null
-            )?.getParticleTexture(
-                EmptyModelData.INSTANCE
-            ) ?: missingTextureSprite
+        
+        val glassSprite = Minecraft.getInstance().itemRenderer.itemModelMesher.getParticleIcon(glassType.getItem())
 
         // If no particle is defined (probable), then just use the underlying glass as the sprite
         val particleSprite =
@@ -211,7 +210,7 @@ class DynamicGlassShardModel(private val glassType: GlassType) : IModelGeometry<
             modelContents: JsonObject
         ): DynamicGlassShardModel {
             println("called the read method!")
-            return DynamicGlassShardModel(GlassTypes.default)
+            return DynamicGlassShardModel(GlassTypes.default, true)
         }
     }
 }
