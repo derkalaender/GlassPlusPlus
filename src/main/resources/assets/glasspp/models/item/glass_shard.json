@@ -1,6 +1,8 @@
 {
   "parent": "forge:item/default",
+  "loader": "glasspp:glass_shard",
   "textures": {
-    "cover": "glassshardpp:item/mask/glassshard"
+    "particle": "glasspp:item/glass_shard",
+    "test": "glasspp:item/glass_shard"
   }
 }
