@@ -33,13 +33,13 @@ import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.BakedItemModel
 import net.minecraftforge.client.model.IModelConfiguration
 import net.minecraftforge.client.model.IModelLoader
-import net.minecraftforge.client.model.ItemLayerModel
 import net.minecraftforge.client.model.ItemTextureQuadConverter
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelTransformComposition
 import net.minecraftforge.client.model.PerspectiveMapWrapper
 import net.minecraftforge.client.model.geometry.IModelGeometry
 import net.minecraftforge.resource.VanillaResourceType
+import java.awt.Color
 import java.util.function.Function
 
 /**
@@ -108,7 +108,29 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
         val quads = ImmutableList.builder<BakedQuad>()
 
         // Add frame quads
-        quads.addAll(ItemLayerModel.getQuadsForSprite(0, frameSprite, transform))
+        val tint = glassSprite.getAllPixels().average().rgb
+        quads.addAll(
+            ItemTextureQuadConverter.convertTexture(
+                transform,
+                frameSprite,
+                frameSprite,
+                NORTH_Z_COVER,
+                Direction.NORTH,
+                tint,
+                1
+            )
+        )
+        quads.addAll(
+            ItemTextureQuadConverter.convertTexture(
+                transform,
+                frameSprite,
+                frameSprite,
+                SOUTH_Z_COVER,
+                Direction.SOUTH,
+                tint,
+                1
+            )
+        )
 
         // Add inside (glass)
         quads.addAll(
@@ -174,6 +196,26 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
 
     private fun Material.hasMissingTextureSprite() = MissingTextureSprite.getLocation() == textureLocation
 
+    private fun TextureAtlasSprite.getAllPixels(): List<Color> {
+        val pixels = mutableListOf<Color>()
+        for (i in 0 until frameCount) {
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    pixels.add(Color(getPixelRGBA(i, x, y), true))
+                }
+            }
+        }
+        return pixels
+    }
+
+    private fun List<Color>.average(): Color {
+        val sumR = sumBy { it.red }
+        val sumG = sumBy { it.green }
+        val sumB = sumBy { it.blue }
+        val sumA = sumBy { it.alpha }
+        return Color(sumB / size, sumG / size, sumR / size, sumA / size) // This needs to be bgr for some reason
+    }
+
     override fun getTextures(
         owner: IModelConfiguration,
         modelGetter: Function<ResourceLocation, IUnbakedModel>,
@@ -231,7 +273,6 @@ class DynamicGlassShardModel(private val glassType: GlassType, private val dummy
     }
 
     object Loader : IModelLoader<DynamicGlassShardModel> {
-
         override fun getResourceType() = VanillaResourceType.MODELS
 
         override fun onResourceManagerReload(resourceManager: IResourceManager) {}
