@@ -2,6 +2,12 @@ val mod_name: String by settings
 rootProject.name = mod_name
 
 pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    }
+
     val kotlin_version: String by settings
     val shadow_version: String by settings
     val ktlint_version: String by settings
