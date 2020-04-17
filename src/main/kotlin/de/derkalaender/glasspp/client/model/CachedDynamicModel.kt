@@ -6,6 +6,9 @@ import net.minecraft.entity.LivingEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
 
+/*
+A simple way to cache model overrides dynamically
+ */
 abstract class CachedDynamicModel<R : Any, T : IBakedModel>(private val cache: MutableMap<R, T>) : IBakedModel {
     abstract fun getKeyForStack(stack: ItemStack): R
 

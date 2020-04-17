@@ -1,6 +1,6 @@
 {
 	"textures": {
-		"texture": "glasspp:item/glass_shard/test"
+		"texture": "glasspp:item/glass_shard/temp"
 	},
 	"elements": [
 		{
