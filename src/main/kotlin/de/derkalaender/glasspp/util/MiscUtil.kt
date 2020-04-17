@@ -2,6 +2,7 @@ package de.derkalaender.glasspp.util
 
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.util.Direction
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.fml.loading.FMLEnvironment
@@ -16,3 +17,6 @@ inline fun <T> runForDist(clientTarget: () -> T, serverTarget: () -> T) = when (
 }
 
 fun Item.toItemStack(count: Int = 1) = ItemStack(this, count)
+
+fun getAllDirections() =
+    arrayOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.UP, Direction.DOWN)
