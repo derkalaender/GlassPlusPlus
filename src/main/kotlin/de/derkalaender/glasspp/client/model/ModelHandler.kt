@@ -20,7 +20,7 @@ object ModelHandler {
 
         val frameModel = event.modelRegistry[frameModelKey]
 
-        if(frameModel != null) {
+        if (frameModel != null) {
             event.modelRegistry[shardModelKey] = DynamicGlassShardModel(event.modelLoader, frameModel)
         }
     }

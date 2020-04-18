@@ -3,12 +3,12 @@ package de.derkalaender.glasspp.recipe
 import de.derkalaender.glasspp.Registry
 import de.derkalaender.glasspp.items.GlassShard
 import de.derkalaender.glasspp.util.toItemStack
+import java.util.function.Function
 import net.minecraft.inventory.CraftingInventory
 import net.minecraft.item.crafting.SpecialRecipe
 import net.minecraft.item.crafting.SpecialRecipeSerializer
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
-import java.util.function.Function
 
 class GlassFromShardsRecipe(
     id: ResourceLocation
@@ -22,9 +22,9 @@ class GlassFromShardsRecipe(
         inv.getAllSlotContents()
             .filter { !it.isEmpty }
             .let {
-                it.size == 4
-                    && it.all { stack -> stack.item == Registry.GLASS_SHARD.get() }
-                    && it.map { stack -> GlassShard.getGlassType(stack) }.distinct().size == 1
+                it.size == 4 &&
+                    it.all { stack -> stack.item == Registry.GLASS_SHARD.get() } &&
+                    it.map { stack -> GlassShard.getGlassType(stack) }.distinct().size == 1
             }
 
     override fun getCraftingResult(inv: CraftingInventory) =

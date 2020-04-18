@@ -3,6 +3,9 @@ package de.derkalaender.glasspp.util.data
 import com.mojang.datafixers.util.Pair
 import de.derkalaender.glasspp.Registry
 import de.derkalaender.glasspp.util.rl
+import java.util.function.BiConsumer
+import java.util.function.Consumer
+import java.util.function.Supplier
 import net.minecraft.advancements.criterion.EnchantmentPredicate
 import net.minecraft.advancements.criterion.ItemPredicate
 import net.minecraft.advancements.criterion.MinMaxBounds
@@ -20,9 +23,6 @@ import net.minecraft.world.storage.loot.RandomValueRange
 import net.minecraft.world.storage.loot.ValidationTracker
 import net.minecraft.world.storage.loot.conditions.Inverted
 import net.minecraft.world.storage.loot.conditions.MatchTool
-import java.util.function.BiConsumer
-import java.util.function.Consumer
-import java.util.function.Supplier
 
 class LootTables(gen: DataGenerator) : LootTableProvider(gen) {
     override fun getTables(): MutableList<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> {

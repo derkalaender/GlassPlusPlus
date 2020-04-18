@@ -1,5 +1,6 @@
 package de.derkalaender.glasspp.util
 
+import java.awt.Color
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -7,7 +8,6 @@ import net.minecraft.util.Direction
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.fml.loading.FMLEnvironment
-import java.awt.Color
 
 val MOD_BUS
     inline get() = FMLJavaModLoadingContext.get().modEventBus

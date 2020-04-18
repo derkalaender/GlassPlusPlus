@@ -2,12 +2,12 @@ package de.derkalaender.glasspp.util.data
 
 import de.derkalaender.glasspp.recipe.GlassFromShardsRecipe
 import de.derkalaender.glasspp.util.rl
+import java.util.function.Consumer
 import net.minecraft.data.CustomRecipeBuilder
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.IFinishedRecipe
 import net.minecraft.data.RecipeProvider
 import net.minecraft.item.crafting.SpecialRecipeSerializer
-import java.util.function.Consumer
 
 class Recipes(gen: DataGenerator) : RecipeProvider(gen) {
     override fun registerRecipes(consumer: Consumer<IFinishedRecipe>) {

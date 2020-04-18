@@ -1,11 +1,11 @@
 package de.derkalaender.glasspp.client.model
 
+import java.awt.Color
 import net.minecraft.client.renderer.model.BakedQuad
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder
 import net.minecraftforge.client.model.pipeline.LightUtil
 import net.minecraftforge.client.model.pipeline.VertexTransformer
-import java.awt.Color
 
 class QuadColorTransformer(original: BakedQuad, color: Color) : VertexTransformer(BakedQuadBuilder()) {
     private val colorArray: FloatArray = color.getRGBComponents(null)

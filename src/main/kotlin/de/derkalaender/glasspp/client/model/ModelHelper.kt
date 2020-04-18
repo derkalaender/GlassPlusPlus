@@ -1,5 +1,7 @@
 package de.derkalaender.glasspp.client.model
 
+import java.util.Random
+import java.util.function.Function
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ItemModelMesher
 import net.minecraft.client.renderer.model.BakedQuad
@@ -16,8 +18,6 @@ import net.minecraft.util.Direction
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.data.EmptyModelData
-import java.util.Random
-import java.util.function.Function
 
 val itemModelMesher: ItemModelMesher by lazy { Minecraft.getInstance().itemRenderer.itemModelMesher }
 val modelManager: ModelManager by lazy { Minecraft.getInstance().modelManager }

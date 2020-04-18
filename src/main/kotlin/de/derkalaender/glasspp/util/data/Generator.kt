@@ -9,7 +9,7 @@ class Generator {
         val generator = event.generator
         // val helper = event.existingFileHelper
 
-        if(event.includeServer()) {
+        if (event.includeServer()) {
             generator.addProvider(LootTables(generator))
             generator.addProvider(Recipes(generator))
         }

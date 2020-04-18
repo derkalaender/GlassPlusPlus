@@ -9,6 +9,7 @@ import de.derkalaender.glasspp.util.getAllPixels
 import de.derkalaender.glasspp.util.rl
 import de.derkalaender.glasspp.util.toBGRA
 import de.derkalaender.glasspp.util.with
+import java.util.Random
 import net.minecraft.block.BlockState
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
@@ -24,7 +25,6 @@ import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.BakedModelWrapper
 import net.minecraftforge.client.model.SimpleModelTransform
 import net.minecraftforge.client.model.data.IModelData
-import java.util.Random
 
 class DynamicGlassShardModel(private val bakery: ModelBakery, private val frameModel: IBakedModel) :
     CachedDynamicModel<GlassType, DynamicGlassShardModel.BakedModel>(mutableMapOf()) {
