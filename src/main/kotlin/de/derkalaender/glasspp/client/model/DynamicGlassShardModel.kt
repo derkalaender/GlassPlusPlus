@@ -3,11 +3,13 @@ package de.derkalaender.glasspp.client.model
 import com.mojang.blaze3d.matrix.MatrixStack
 import de.derkalaender.glasspp.glass.GlassType
 import de.derkalaender.glasspp.items.GlassShard
+import de.derkalaender.glasspp.util.average
 import de.derkalaender.glasspp.util.getAllDirections
+import de.derkalaender.glasspp.util.getAllPixels
 import de.derkalaender.glasspp.util.rl
+import de.derkalaender.glasspp.util.toBGRA
 import de.derkalaender.glasspp.util.with
 import net.minecraft.block.BlockState
-import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.renderer.TransformationMatrix
 import net.minecraft.client.renderer.model.BakedQuad
 import net.minecraft.client.renderer.model.IBakedModel
@@ -22,9 +24,6 @@ import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.BakedModelWrapper
 import net.minecraftforge.client.model.SimpleModelTransform
 import net.minecraftforge.client.model.data.IModelData
-import net.minecraftforge.client.model.pipeline.LightUtil
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer
-import java.awt.Color
 import java.util.Random
 
 class DynamicGlassShardModel(private val bakery: ModelBakery, private val frameModel: IBakedModel) :
@@ -88,32 +87,18 @@ class DynamicGlassShardModel(private val bakery: ModelBakery, private val frameM
 
             val innerModel = innerModelUnbaked.bake(bakery, transform, textureGetterHack, name)
 
+            val glassColor = glassSpriteLocation.getAllPixels().average().toBGRA()
+
             getAllDirections().forEach { faceQuads[it] = mutableListOf() }
 
             quads.addAll(innerModel.getQuads())
-            quads.addAll(frameModel.getQuads())
+            quads.addAll(frameModel.getQuads().map { quad -> QuadColorTransformer(quad, glassColor).build() })
+
+            // ItemTextureQuadConverter.genQuad()
 
             getAllDirections().forEach {
                 faceQuads[it]?.addAll(innerModel.getQuads(it))
-                faceQuads[it]?.addAll(frameModel.getQuads(it))
-            }
-        }
-
-        private fun tintQuads(quads: List<BakedQuad>, color: Color): List<BakedQuad> {
-
-            return quads.map { quad ->
-                val vertexBuffer = VertexBufferConsumer()
-                LightUtil.putBakedQuad(vertexBuffer, quad)
-                val bufferBuilder = BufferBuilder(quad.vertexData.size)
-                println(quad.vertexData!!.contentToString())
-
-                BakedQuad(
-                    quad.vertexData,
-                    quad.tintIndex,
-                    quad.face,
-                    quad.func_187508_a(),
-                    quad.shouldApplyDiffuseLighting()
-                )
+                faceQuads[it]?.addAll(frameModel.getQuads(it).map { quad -> QuadColorTransformer(quad, glassColor).build() })
             }
         }
 
