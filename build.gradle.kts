@@ -72,7 +72,8 @@ configure<UserDevExtension> {
 
 repositories {
     mavenCentral()
-    maven(url = "https://dvs1.progwml6.com/files/maven/") // JEI
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    maven("https://dvs1.progwml6.com/files/maven/") // JEI
 }
 
 val fg = extensions.getByType(DependencyManagementExtension::class.java)

@@ -1,9 +1,0 @@
-{
-  "parent": "forge:item/default",
-  "loader": "glasspp:glass_shard",
-  "textures": {
-    "mask": "glasspp:item/glass_shard/mask",
-    "cover": "glasspp:item/glass_shard/cover",
-    "frame": "glasspp:item/glass_shard/frame"
-  }
-}
