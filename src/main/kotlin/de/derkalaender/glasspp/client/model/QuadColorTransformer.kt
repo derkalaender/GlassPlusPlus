@@ -15,9 +15,7 @@ class QuadColorTransformer(original: BakedQuad, color: Color) : VertexTransforme
     }
 
     override fun put(element: Int, vararg data: Float) {
-        println("put called")
         if (vertexFormat.elements[element].usage == VertexFormatElement.Usage.COLOR) {
-            println("this is color")
             super.put(element, *colorArray)
         } else {
             super.put(element, *data)
